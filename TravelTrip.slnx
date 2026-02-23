@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TravelTrip.Core/TravelTrip.Core.csproj" />
+  <Project Path="TravelTrip.Worker/TravelTrip.Worker.csproj" />
+  <Project Path="TravelTripApi/TravelTripApi.csproj" />
+</Solution>

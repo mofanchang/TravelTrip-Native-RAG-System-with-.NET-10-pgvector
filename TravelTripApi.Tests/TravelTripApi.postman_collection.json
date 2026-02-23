@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "TravelTripApi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "完整 CRUD + 錯誤情境測試"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register - Success",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"email\":\"newuser@test.com\",\"password\":\"Password123\",\"firstName\":\"Test\",\"lastName\":\"User\"}"},
+            "url": {"raw": "http://localhost:5000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","auth","register"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Register - Duplicate Email",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"email\":\"existing@test.com\",\"password\":\"Password123\"}"},
+            "url": {"raw": "http://localhost:5000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","auth","register"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Success",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"email\":\"login@test.com\",\"password\":\"Password123\"}"},
+            "url": {"raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","auth","login"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Wrong Password",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"email\":\"login@test.com\",\"password\":\"WrongPassword\"}"},
+            "url": {"raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","auth","login"]}
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "item": [
+        {
+          "name": "Create Booking - Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\"items\":[{\"tripId\":1,\"quantity\":2}]}"},
+            "url": {"raw": "http://localhost:5000/api/bookings", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","bookings"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Create Booking - Insufficient Seats",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\"items\":[{\"tripId\":1,\"quantity\":100}]}"},
+            "url": {"raw": "http://localhost:5000/api/bookings", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","bookings"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://localhost:5000/api/bookings/1/cancel", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","bookings","1","cancel"]}
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add To Cart",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"tripId\":1,\"quantity\":2}"},
+            "url": {"raw": "http://localhost:5000/api/cart", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","cart"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://localhost:5000/api/cart", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","cart"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"quantity\":3}"},
+            "url": {"raw": "http://localhost:5000/api/cart/items/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","cart","items","1"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "http://localhost:5000/api/cart/items/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","cart","items","1"]}
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Password Reset",
+      "item": [
+        {
+          "name": "Request Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"email\":\"test@test.com\"}"},
+            "url": {"raw": "http://localhost:5000/api/password/reset/request", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","password","reset","request"]}
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"token\":\"{{reset_token}}\",\"newPassword\":\"NewPassword123\",\"confirmPassword\":\"NewPassword123\"}"},
+            "url": {"raw": "http://localhost:5000/api/password/reset", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api","password","reset"]}
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

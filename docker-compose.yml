@@ -1,0 +1,36 @@
+services:
+  db:
+    image: ankane/pgvector:latest
+    container_name: traveltrip_psql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password_here
+      POSTGRES_DB: traveltrip_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # 🚀 新增：API 服務
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: traveltrip_api
+    ports:
+      - "5000:8080" # 將外部 5000 對應到容器內 .NET 預設的 8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Database=traveltrip_db;Username=postgres;Password=your_password_here
+    depends_on:
+      - db
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80" # 改為 8081 避免與 API 可能的衝突

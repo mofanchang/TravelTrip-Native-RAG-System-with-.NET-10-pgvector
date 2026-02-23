@@ -1,0 +1,122 @@
+using Xunit;
+using TravelTripApi.Services;
+
+namespace TravelTripApi.Tests;
+
+/// <summary>
+/// 測試 LocalChineseEmbedder：向量生成與相似度計算
+/// </summary>
+public class LocalChineseEmbedderTests
+{
+    private readonly LocalChineseEmbedder _embedder = new();
+
+    // ─── 基本向量生成 ───────────────────────────────────────
+
+    [Fact]
+    public void GenerateEmbedding_ReturnCorrectDimension()
+    {
+        var embedding = _embedder.GenerateEmbedding("東京美食旅遊");
+        Assert.Equal(384, embedding.Length);
+    }
+
+    [Fact]
+    public void GenerateEmbedding_EmptyString_ReturnsZeroVector()
+    {
+        var embedding = _embedder.GenerateEmbedding("");
+        Assert.All(embedding, v => Assert.Equal(0f, v));
+    }
+
+    [Fact]
+    public void GenerateEmbedding_NullString_ReturnsZeroVector()
+    {
+        var embedding = _embedder.GenerateEmbedding(null!);
+        Assert.All(embedding, v => Assert.Equal(0f, v));
+    }
+
+    [Fact]
+    public void GenerateEmbedding_WhitespaceString_ReturnsZeroVector()
+    {
+        var embedding = _embedder.GenerateEmbedding("   ");
+        Assert.All(embedding, v => Assert.Equal(0f, v));
+    }
+
+    // ─── 一致性測試（同樣的輸入 → 同樣的向量）─────────────
+
+    [Fact]
+    public void GenerateEmbedding_SameInput_ReturnsSameVector()
+    {
+        var vec1 = _embedder.GenerateEmbedding("日本海灘度假");
+        var vec2 = _embedder.GenerateEmbedding("日本海灘度假");
+        Assert.Equal(vec1, vec2);
+    }
+
+    // ─── 不同輸入 → 不同向量 ──────────────────────────────
+
+    [Fact]
+    public void GenerateEmbedding_DifferentInput_ReturnsDifferentVector()
+    {
+        var vec1 = _embedder.GenerateEmbedding("東京美食探索");
+        var vec2 = _embedder.GenerateEmbedding("瑞士阿爾卑斯山自然風光");
+        Assert.NotEqual(vec1, vec2);
+    }
+
+    // ─── L2 正規化驗證（向量長度應該接近 1）─────────────────
+
+    [Fact]
+    public void GenerateEmbedding_IsNormalized()
+    {
+        var embedding = _embedder.GenerateEmbedding("韓國釜山海灘旅遊");
+        float norm = (float)Math.Sqrt(embedding.Sum(x => x * x));
+        Assert.Equal(1.0f, norm, precision: 4);
+    }
+
+    // ─── 餘弦相似度測試 ───────────────────────────────────
+
+    [Fact]
+    public void CosineSimilarity_IdenticalVectors_ReturnsOne()
+    {
+        var vec = _embedder.GenerateEmbedding("東京美食");
+        float similarity = LocalChineseEmbedder.CosineSimilarity(vec, vec);
+        Assert.Equal(1.0f, similarity, precision: 4);
+    }
+
+    [Fact]
+    public void CosineSimilarity_ZeroVectors_ReturnsZero()
+    {
+        var zero = new float[384];
+        float similarity = LocalChineseEmbedder.CosineSimilarity(zero, zero);
+        Assert.Equal(0f, similarity);
+    }
+
+    [Fact]
+    public void CosineSimilarity_DifferentLengthVectors_ReturnsZero()
+    {
+        var vec1 = new float[] { 1f, 0f, 0f };
+        var vec2 = new float[] { 1f, 0f };
+        float similarity = LocalChineseEmbedder.CosineSimilarity(vec1, vec2);
+        Assert.Equal(0f, similarity);
+    }
+
+    [Fact]
+    public void CosineSimilarity_ResultInValidRange()
+    {
+        var vec1 = _embedder.GenerateEmbedding("日本東京旅遊美食");
+        var vec2 = _embedder.GenerateEmbedding("韓國首爾購物美食");
+        float similarity = LocalChineseEmbedder.CosineSimilarity(vec1, vec2);
+        Assert.True(similarity >= -1f && similarity <= 1f);
+    }
+
+    // ─── 語義類別驗證 ─────────────────────────────────────
+
+    [Theory]
+    [InlineData("東京美食探索5日遊", "大阪購物天堂4日")]
+    [InlineData("釜山海雲台度假", "濟州島蜜月旅遊")]
+    [InlineData("普吉島海灘度假", "夏威夷海島度假")]
+    public void CosineSimilarity_SameCategory_HasPositiveSimilarity(string text1, string text2)
+    {
+        var vec1 = _embedder.GenerateEmbedding(text1);
+        var vec2 = _embedder.GenerateEmbedding(text2);
+        float similarity = LocalChineseEmbedder.CosineSimilarity(vec1, vec2);
+        Assert.True(similarity > 0f, $"期待正值相似度，但得到: {similarity}");
+    }
+}

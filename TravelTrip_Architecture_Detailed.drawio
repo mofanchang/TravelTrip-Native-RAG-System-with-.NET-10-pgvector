@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net" modified="2024-02-23T05:35:00.000Z" agent="Antigravity" version="21.0.0" type="device">
+  <diagram id="Detailed_Architecture" name="Detailed Architecture">
+    <mxGraphModel dx="1422" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Client Layer Group -->
+        <mxCell id="G1" value="Client Layer (React / Vite)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="2" value="UI Components&lt;br&gt;(Trips, Search, Chat)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="G1">
+          <mxGeometry x="30" y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="2b" value="HTTP Interceptors&lt;br&gt;(Auth / Logging)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="G1">
+          <mxGeometry x="30" y="140" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Presentation & Middleware Group -->
+        <mxCell id="G2" value="Presentation &amp; Middleware" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="300" y="40" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="JWT / Role Auth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="G2">
+          <mxGeometry x="30" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3b" value="Global Exception Handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="G2">
+          <mxGeometry x="30" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3c" value="CORS / Static Files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="G2">
+          <mxGeometry x="30" y="180" width="160" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Application Services Group -->
+        <mxCell id="G3" value="Application Services" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="540" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="TripRagService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="20" y="40" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4b" value="ChatbotService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="150" y="40" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4c" value="BookingService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="280" y="40" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4d" value="AuthService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="410" y="40" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4e" value="AuditService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="20" y="120" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4f" value="EmailService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="150" y="120" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4g" value="CartService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="G3">
+          <mxGeometry x="280" y="120" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Local AI Unit -->
+        <mxCell id="AI_Box" value="Local AI Core" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="G3">
+          <mxGeometry x="20" y="190" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Local Text Embedder (SmartComponents)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="AI_Box">
+          <mxGeometry x="60" y="30" width="380" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Infrastructure Group -->
+        <mxCell id="G4" value="Infrastructure" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="200" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="PostgreSQL&lt;br&gt;+ pgvector" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="G4">
+          <mxGeometry x="30" y="50" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="TravelTrip.Worker&lt;br&gt;(Background Service)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="G4">
+          <mxGeometry x="30" y="220" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="SMTP Server&lt;br&gt;(Gmail)" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="G4">
+          <mxGeometry x="30" y="400" width="140" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Connections -->
+        <mxCell id="L1" value="JSON / JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2b" target="G2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="Request Context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="G2" target="G3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="EF Core 10 / SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="G3" target="G4">
+          <mxGeometry x="-0.7" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L4" value="Batch Process" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
