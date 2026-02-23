@@ -22,7 +22,7 @@
 - **現代化設計模式**: 嚴格遵循 **SOLID 原則**、**Repository Pattern** 與 **Clean Architecture** 思維。
 
 ### 📊 系統架構
-詳細設計文件請參閱 [architecture.md](./architecture.md)。
+詳細設計與系統流程請參閱 [詳細架構文件](./architecture_detailed.md)，或直接開啟 [Draw.io 原始繪圖檔](./TravelTrip_Architecture_Detailed.drawio)。
 
 ---
 
@@ -39,7 +39,7 @@
 - **Enterprise Design Patterns**: Implements **Repository Pattern**, **Unit of Work** (via EF Core), and **Clean Architecture** principles.
 
 ### 📊 Architecture
-Detailed design and sequence diagrams are available in [architecture.md](./architecture.md).
+Detailed design and sequence diagrams are available in the [Detailed Architecture Guide](./architecture_detailed.md). You can also view/edit the source diagram in [TravelTrip_Architecture_Detailed.drawio](./TravelTrip_Architecture_Detailed.drawio).
 
 ---
 
