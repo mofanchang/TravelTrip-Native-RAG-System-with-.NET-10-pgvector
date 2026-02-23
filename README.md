@@ -22,7 +22,7 @@
 - **現代化設計模式**: 嚴格遵循 **SOLID 原則**、**Repository Pattern** 與 **Clean Architecture** 思維。
 
 ### 系統架構
-本專案採用效能導向的分散式架構。您可以查閱下方的 Mermaid 架構圖，或下載 [Draw.io 原始繪圖檔 (中文版)](./TravelTrip_Architecture_CN.drawio)。
+本專案採用效能導向的分散式架構。您可以查閱下方的 Mermaid 架構圖，或下載 [Draw.io 原始繪圖檔 (中文版)](./docs/diagrams/arch-simple-cn.drawio)。
 
 ```mermaid
 graph TD
@@ -66,7 +66,7 @@ graph TD
 - **Enterprise Design Patterns**: Implements **Repository Pattern**, **Unit of Work** (via EF Core), and **Clean Architecture** principles.
 
 ### Architecture
-The project follows a distributed architecture designed for performance. Below is the Mermaid visualization. You can also download the [Source Draw.io File (English)](./TravelTrip_Architecture_EN.drawio).
+The project follows a distributed architecture designed for performance. Below is the Mermaid visualization. You can also download the [Source Draw.io File (English)](./docs/diagrams/arch-simple-en.drawio).
 
 ```mermaid
 graph TD
