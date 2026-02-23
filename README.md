@@ -22,7 +22,60 @@
 - **現代化設計模式**: 嚴格遵循 **SOLID 原則**、**Repository Pattern** 與 **Clean Architecture** 思維。
 
 ### 系統架構
-詳細設計與系統流程請參閱 [詳細架構文件](./architecture_detailed.md)，或直接開啟 [Draw.io 原始繪圖檔](./TravelTrip_Architecture_Detailed.drawio)。
+為了發揮 GitHub 的渲染能力，本專案直接在 README 中嵌入 **Mermaid 動態架構圖**。您可以直接查閱下圖，或開啟 [Draw.io 原始繪圖檔](./TravelTrip_Architecture_Detailed.drawio)。
+
+```mermaid
+graph TD
+    subgraph Client_Layer [用戶端 - React / Vite]
+        UI["UI Components<br/>(Trips, Search, Cart)"]
+        State["State Management<br/>(Storage / Context)"]
+        Inceptors["HTTP Interceptors<br/>(JWT Injection)"]
+        UI --> State
+        State --> Inceptors
+    end
+
+    subgraph API_Processing [API 中介軟體與流程]
+        CORS["CORS Policy"]
+        Auth["JWT Authentication<br/>(AuthorizeRole)"]
+        ExHandler["Global Exception Handler<br/>(Middleware)"]
+        Inceptors -- "HTTP Request" --> CORS
+        CORS --> Auth
+        Auth --> ExHandler
+    end
+
+    subgraph Application_Services [整合服務層]
+        TRAG["TripRagService<br/>(Search & Init)"]
+        CBOT["ChatbotService<br/>(AI Chat)"]
+        BOOK["BookingService<br/>(Order Flow)"]
+        CART["CartService<br/>(Redis/DB)"]
+        AUTH_S["AuthService<br/>(Identity)"]
+        AUDIT["AuditService<br/>(Admin Logs)"]
+        EMAIL["EmailService<br/>(SMTP)"]
+
+        ExHandler --> TRAG
+        TRAG --> CBOT
+        ExHandler --> BOOK
+        ExHandler --> AUTH_S
+        BOOK -.-> AUDIT
+    end
+
+    subgraph AI_Infrastructure [地端 AI 核心]
+        Embedding["Local Text Embedder<br/>(SmartComponents)"]
+        TRAG -- "Generate Query Vector" --> Embedding
+        Worker["TravelTrip.Worker"] -- "Batch Vectorization" --> Embedding
+    end
+
+    subgraph Persistence_Layer [資料持久化]
+        Repo["ITripRepository / TripRepo"]
+        Ctx["TravelDbContext<br/>(EF Core 10)"]
+        TRAG --> Repo
+        BOOK --> Ctx
+        AUTH_S --> Ctx
+        AUDIT --> Ctx
+        Repo --> Ctx
+        Ctx -- "Vector Search (+/-)" --> DB[("PostgreSQL<br/>+ pgvector")]
+    end
+```
 
 ---
 
@@ -39,7 +92,16 @@
 - **Enterprise Design Patterns**: Implements **Repository Pattern**, **Unit of Work** (via EF Core), and **Clean Architecture** principles.
 
 ### Architecture
-Detailed design and sequence diagrams are available in the [Detailed Architecture Guide](./architecture_detailed.md). You can also view/edit the source diagram in [TravelTrip_Architecture_Detailed.drawio](./TravelTrip_Architecture_Detailed.drawio).
+The project leverages GitHub's native Mermaid support for dynamic visualization. You can also view the [Source Draw.io File](./TravelTrip_Architecture_Detailed.drawio).
+
+```mermaid
+graph TD
+    API["TravelTrip API"] --> Core["TravelTrip.Core"]
+    Worker["TravelTrip.Worker"] --> Core
+    Core --> DB[("PostgreSQL + pgvector")]
+    API -- "RAG Search" --> DB
+    Worker -- "Background Vectorization" --> DB
+```
 
 ---
 
