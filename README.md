@@ -96,11 +96,55 @@ The project leverages GitHub's native Mermaid support for dynamic visualization.
 
 ```mermaid
 graph TD
-    API["TravelTrip API"] --> Core["TravelTrip.Core"]
-    Worker["TravelTrip.Worker"] --> Core
-    Core --> DB[("PostgreSQL + pgvector")]
-    API -- "RAG Search" --> DB
-    Worker -- "Background Vectorization" --> DB
+    subgraph Client_Layer [Client - React / Vite]
+        UI["UI Components<br/>(Trips, Search, Cart)"]
+        State["State Management<br/>(Storage / Context)"]
+        Inceptors["HTTP Interceptors<br/>(JWT Injection)"]
+        UI --> State
+        State --> Inceptors
+    end
+
+    subgraph API_Processing [API Middleware & Pipeline]
+        CORS["CORS Policy"]
+        Auth["JWT Authentication<br/>(AuthorizeRole)"]
+        ExHandler["Global Exception Handler<br/>(Middleware)"]
+        Inceptors -- "HTTP Request" --> CORS
+        CORS --> Auth
+        Auth --> ExHandler
+    end
+
+    subgraph Application_Services [Logic Service Layer]
+        TRAG["TripRagService<br/>(Search & Init)"]
+        CBOT["ChatbotService<br/>(AI Chat)"]
+        BOOK["BookingService<br/>(Order Flow)"]
+        CART["CartService<br/>(Redis/DB)"]
+        AUTH_S["AuthService<br/>(Identity)"]
+        AUDIT["AuditService<br/>(Admin Logs)"]
+        EMAIL["EmailService<br/>(SMTP)"]
+
+        ExHandler --> TRAG
+        TRAG --> CBOT
+        ExHandler --> BOOK
+        ExHandler --> AUTH_S
+        BOOK -.-> AUDIT
+    end
+
+    subgraph AI_Infrastructure [Local AI Core]
+        Embedding["Local Text Embedder<br/>(SmartComponents)"]
+        TRAG -- "Generate Query Vector" --> Embedding
+        Worker["TravelTrip.Worker"] -- "Batch Vectorization" --> Embedding
+    end
+
+    subgraph Persistence_Layer [Data Persistence]
+        Repo["ITripRepository / TripRepo"]
+        Ctx["TravelDbContext<br/>(EF Core 10)"]
+        TRAG --> Repo
+        BOOK --> Ctx
+        AUTH_S --> Ctx
+        AUDIT --> Ctx
+        Repo --> Ctx
+        Ctx -- "Vector Search (+/-)" --> DB[("PostgreSQL<br/>+ pgvector")]
+    end
 ```
 
 ---
