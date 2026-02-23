@@ -22,7 +22,7 @@
 - **現代化設計模式**: 嚴格遵循 **SOLID 原則**、**Repository Pattern** 與 **Clean Architecture** 思維。
 
 ### 系統架構
-本專案採用效能導向的分散式架構。您可以查閱下方的 Mermaid 架構圖，或下載 [Draw.io 原始繪圖檔 (中文版)](./docs/diagrams/arch-simple-cn.drawio)。
+[系統架構詳細說明文件](./docs/architecture-summary.md) | [Draw.io 原始繪圖檔 (中文版)](./docs/diagrams/arch-simple-cn.drawio)
 
 ```mermaid
 graph TD
@@ -51,6 +51,30 @@ graph TD
     Worker -- "批次向量化處理" --> DB
 ```
 
+#### 關鍵流程：非同步向量化 (RAG Flow)
+```mermaid
+sequenceDiagram
+    participant User as 使用者/管理員
+    participant API as TravelTrip API
+    participant DB as PostgreSQL
+    participant Worker as Background Worker
+
+    User->>API: 建立新行程 (POST /api/trips)
+    API->>DB: 儲存行程資料 (Embedding 為空)
+    API-->>User: 回傳成功 (201 Created)
+    
+    Note over Worker, DB: 背景輪詢程序
+    Worker->>DB: 查詢待向量化行程
+    DB-->>Worker: 回傳行程列表
+    Worker->>Worker: 產生向量 (Local AI)
+    Worker->>DB: 更新向量欄位
+    
+    User->>API: 進行語義搜尋
+    API->>DB: 執行向量搜尋 (pgvector)
+    DB-->>API: 回傳相似行程
+    API-->>User: 展示 RAG 搜尋結果
+```
+
 ---
 
 ## English
@@ -66,7 +90,7 @@ graph TD
 - **Enterprise Design Patterns**: Implements **Repository Pattern**, **Unit of Work** (via EF Core), and **Clean Architecture** principles.
 
 ### Architecture
-The project follows a distributed architecture designed for performance. Below is the Mermaid visualization. You can also download the [Source Draw.io File (English)](./docs/diagrams/arch-simple-en.drawio).
+[Detailed Architecture Guide](./docs/architecture-summary.md) | [Source Draw.io File (English)](./docs/diagrams/arch-simple-en.drawio)
 
 ```mermaid
 graph TD
@@ -93,6 +117,30 @@ graph TD
     FE -- "HTTPS / JWT" --> API
     Service -- "EF Core / RAG Search" --> DB
     Worker -- "Batch Vectorization" --> DB
+```
+
+#### Key Process: Asynchronous Vectorization (RAG Flow)
+```mermaid
+sequenceDiagram
+    participant User as User / Admin
+    participant API as TravelTrip API
+    participant DB as PostgreSQL
+    participant Worker as Background Worker
+
+    User->>API: Create New Trip (POST /api/trips)
+    API->>DB: Save Trip Data (Embedding is null)
+    API-->>User: Return Success (201 Created)
+    
+    Note over Worker, DB: Background Polling Process
+    Worker->>DB: Query for Un-vectorized Trips
+    DB-->>Worker: Return Trip List
+    Worker->>Worker: Generate Vector (Local AI)
+    Worker->>DB: Update Vector Column
+    
+    User->>API: Perform Semantic Search
+    API->>DB: Execute Vector Search (pgvector)
+    DB-->>API: Return Similar Trips
+    API-->>User: Display RAG Search Results
 ```
 
 ---
