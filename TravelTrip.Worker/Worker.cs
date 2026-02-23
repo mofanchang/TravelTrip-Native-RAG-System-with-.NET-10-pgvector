@@ -21,7 +21,7 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("🚀 TravelTrip RAG 處理背景服務已啟動");
+        _logger.LogInformation("TravelTrip RAG 處理背景服務已啟動");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -36,7 +36,7 @@ public class Worker : BackgroundService
 
                     if (trips.Any())
                     {
-                        _logger.LogInformation("🧪 發現 {Count} 個新行程，正在進行向量化...", trips.Count);
+                        _logger.LogInformation("發現 {Count} 個新行程，正在進行向量化...", trips.Count);
 
                         // 2. 並行生成向量
                         await Parallel.ForEachAsync(trips, stoppingToken, async (trip, ct) =>
@@ -49,13 +49,13 @@ public class Worker : BackgroundService
 
                         // 3. 儲存更動
                         await repository.SaveChangesAsync();
-                        _logger.LogInformation("✅ 向量化處理完成");
+                        _logger.LogInformation("向量化處理完成");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ 背景處理發生錯誤");
+                _logger.LogError(ex, "背景處理發生錯誤");
             }
 
             // 4. 每 30 秒巡檢一次 (面試時可以說這可以依據 Queue 訊號動態觸發)

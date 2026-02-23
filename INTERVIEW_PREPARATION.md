@@ -1,18 +1,18 @@
-# 🎯 .NET 專案面試準備完整指南 (已更新)
+# .NET 專案面試準備完整指南 (已更新)
 
-## 📊 專案現況評估
+## 專案現況評估
 
-### ✅ 核心優勢 (已經實作完成，面試必講)
+### 核心優勢 (已經實作完成，面試必講)
 
 | 項目 | 完成度 | 面試亮點 |
 |------|-------|---------|
-| **技術棧** | ✅ 100% | **.NET 10 (Preview)** + EF Core 10 + pgvector |
-| **架構設計** | ✅ 100% | **Repository Pattern** + **BaseController** 抽離 |
-| **AI 整合** | ✅ 100% | **Microsoft.Extensions.AI** 通用抽象 (解耦 AI 模型) |
-| **效能優化** | ✅ 100% | **Parallel.ForEachAsync** 並行向量化 + 批量處理 |
-| **安全性** | ✅ 100% | **PBKDF2 雜湊** + JWT Security (Issuer/Audience) |
-| **程式碼規範** | ✅ 100% | **ApiResponse<T>** 統一格式 + 全域異常處理 Middleware |
-| **DevOps** | ✅ 100% | **多階段 Dockerfile** 建置 |
+| **技術棧** | 100% | **.NET 10 (Preview)** + EF Core 10 + pgvector |
+| **架構設計** | 100% | **Repository Pattern** + **BaseController** 抽離 |
+| **AI 整合** | 100% | **Microsoft.Extensions.AI** 通用抽象 (解耦 AI 模型) |
+| **效能優化** | 100% | **Parallel.ForEachAsync** 並行向量化 + 批量處理 |
+| **安全性** | 100% | **PBKDF2 雜湊** + JWT Security (Issuer/Audience) |
+| **程式碼規範** | 100% | **ApiResponse<T>** 統一格式 + 全域異常處理 Middleware |
+| **DevOps** | 100% | **多階段 Dockerfile** 建置 |
 
 ---
 
@@ -107,7 +107,7 @@ graph LR
 
 ---
 
-## 🚫 避免踩雷 (反向準備)
+## 避免踩雷 (反向準備)
 
 1.  **Q: 為什麼沒用 Redis？**
     *   **A:** 這是目前規劃中的 Phase 4 項目。目前的 RAG 系統優先解決精準度與架構問題，下一步會引入 Redis 快取熱門搜尋向量，進一步降低 AI API 的呼叫成本。
@@ -120,17 +120,17 @@ graph LR
 
 當系統需要處理數百萬筆行程時，我會將 RAG 邏輯從單體 API 拆分出來：
 
-#### 🏗️ 三專案架構 (Multi-Project Template)
+#### 三專案架構 (Multi-Project Template)
 - **TravelTrip.Api**: 負責接收請求與回傳結果，不執行耗時的 AI 運算。
 - **TravelTrip.Worker**: 獨立的背景服務專案，負責連接 AI 模型生成向量。
 - **TravelTrip.Core**: **共享函式庫專案**，存放共享的 `DbContext`、`Entities` 與 `ITripRepository`，確保兩端邏輯一致。
 
-#### 📡 通訊機制 (Message Queue)
+#### 通訊機制 (Message Queue)
 - 使用 **MassTransit** 整合 **RabbitMQ**。
 - 當 API 存入新行程後，發送一個 `TripCreatedEvent`。
 - Worker 訂閱此事件，離線生成 `Embedding` 並回寫資料庫，實現「最終一致性」。
 
-#### 🚀 部署優勢
+#### 部署優勢
 - API 跟 Worker 可以分別放在不同的 Docker 容器裡。
 - 如果上架行程突然變多，只需單獨把 Worker 的數量「水平擴展 (Scale Out)」至 10 個，而不影響使用者的訂單流程。
 

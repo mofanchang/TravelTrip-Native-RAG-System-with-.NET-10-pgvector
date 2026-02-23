@@ -60,8 +60,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
-// 5. 🚀 .NET 10 原生 AI & RAG 服務註冊
-// ✅ 使用 Microsoft SmartComponents (完全免費、地端運行、384 維度)
+// 5. .NET 10 原生 AI & RAG 服務註冊
+// 使用 Microsoft SmartComponents (完全免費、地端運行、384 維度)
 builder.Services.AddLocalTextEmbedder(); // 註冊地端向量引擎
 
 builder.Services.AddScoped<TravelTrip.Core.Data.Repositories.ITripRepository, TravelTrip.Core.Data.Repositories.TripRepository>();
@@ -79,7 +79,7 @@ builder.Services.AddScoped<PasswordResetService>();
 
 var app = builder.Build();
 
-// 6. 🔥 分散式架構：RAG 初始化已移至 TravelTrip.Worker 背景服務
+// 6. 分散式架構：RAG 初始化已移至 TravelTrip.Worker 背景服務
 // API 只負責提供搜尋與 CRUD 端點，不處理耗時的向量生成場景
 
 app.UseMiddleware<TravelTripApi.Middleware.GlobalExceptionMiddleware>();

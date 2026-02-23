@@ -41,18 +41,18 @@ public class TripRagService
     {
         try
         {
-            _logger.LogInformation("🚀 開始初始化 .NET 10 原生 RAG (並行模式)...");
+            _logger.LogInformation("開始初始化 .NET 10 原生 RAG (並行模式)...");
 
             var batchSize = _config.GetValue<int>("RagInitialization:BatchSize", 10);
             var tripsToVectorize = await _tripRepository.GetTripsToVectorizeAsync(batchSize);
 
             if (tripsToVectorize.Count == 0)
             {
-                _logger.LogInformation("✅ 所有行程已完成向量化");
+                _logger.LogInformation("所有行程已完成向量化");
                 return true;
             }
 
-            _logger.LogInformation("📊 正在並行生成 {Count} 個行程的向量...", tripsToVectorize.Count);
+            _logger.LogInformation("正在並行生成 {Count} 個行程的向量...", tripsToVectorize.Count);
 
             // 使用 .NET 10 Parallel.ForEachAsync 提升效能
             await Parallel.ForEachAsync(tripsToVectorize, async (trip, ct) =>
@@ -64,12 +64,12 @@ public class TripRagService
             });
 
             await _tripRepository.SaveChangesAsync();
-            _logger.LogInformation("✅ RAG 並行初始化完成");
+            _logger.LogInformation("RAG 並行初始化完成");
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ RAG 初始化異常");
+            _logger.LogInformation("RAG 初始化異常");
             return false;
         }
     }
@@ -82,7 +82,7 @@ public class TripRagService
         if (string.IsNullOrWhiteSpace(query))
             return new List<TripSearchResultDto>();
 
-        _logger.LogInformation("🔍 .NET 10 向量搜尋: {Query}", query);
+        _logger.LogInformation("網頁向量搜尋: {Query}", query);
 
         // 1. 生成搜尋詞的向量
         var queryEmbeddingResult = await _embeddingGenerator.GenerateAsync(new[] { query });
