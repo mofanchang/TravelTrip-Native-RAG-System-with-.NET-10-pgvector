@@ -22,59 +22,33 @@
 - **現代化設計模式**: 嚴格遵循 **SOLID 原則**、**Repository Pattern** 與 **Clean Architecture** 思維。
 
 ### 系統架構
-為了發揮 GitHub 的渲染能力，本專案直接在 README 中嵌入 **Mermaid 動態架構圖**。您可以直接查閱下圖，或開啟 [Draw.io 原始繪圖檔](./TravelTrip_Architecture_Detailed.drawio)。
+本專案採用效能導向的分散式架構。您可以查閱下方的 Mermaid 架構圖，或下載 [Draw.io 原始繪圖檔 (中文版)](./TravelTrip_Architecture_CN.drawio)。
 
 ```mermaid
 graph TD
-    subgraph Client_Layer [用戶端 - React / Vite]
-        UI["UI Components<br/>(Trips, Search, Cart)"]
-        State["State Management<br/>(Storage / Context)"]
-        Inceptors["HTTP Interceptors<br/>(JWT Injection)"]
-        UI --> State
-        State --> Inceptors
+    subgraph Client_Layer [用戶端層]
+        FE["React / Vite 前端"]
     end
 
-    subgraph API_Processing [API 中介軟體與流程]
-        CORS["CORS Policy"]
-        Auth["JWT Authentication<br/>(AuthorizeRole)"]
-        ExHandler["Global Exception Handler<br/>(Middleware)"]
-        Inceptors -- "HTTP Request" --> CORS
-        CORS --> Auth
-        Auth --> ExHandler
+    subgraph API_Layer [API 服務層]
+        API["ASP.NET Core API"]
+        Service["TripRagService / AuthService"]
+        API --> Service
     end
 
-    subgraph Application_Services [整合服務層]
-        TRAG["TripRagService<br/>(Search & Init)"]
-        CBOT["ChatbotService<br/>(AI Chat)"]
-        BOOK["BookingService<br/>(Order Flow)"]
-        CART["CartService<br/>(Redis/DB)"]
-        AUTH_S["AuthService<br/>(Identity)"]
-        AUDIT["AuditService<br/>(Admin Logs)"]
-        EMAIL["EmailService<br/>(SMTP)"]
-
-        ExHandler --> TRAG
-        TRAG --> CBOT
-        ExHandler --> BOOK
-        ExHandler --> AUTH_S
-        BOOK -.-> AUDIT
+    subgraph Worker_Layer [背景處理層]
+        Worker["TravelTrip.Worker 背景服務"]
+        AI["地端 AI 向量生成器"]
+        Worker --> AI
     end
 
-    subgraph AI_Infrastructure [地端 AI 核心]
-        Embedding["Local Text Embedder<br/>(SmartComponents)"]
-        TRAG -- "Generate Query Vector" --> Embedding
-        Worker["TravelTrip.Worker"] -- "Batch Vectorization" --> Embedding
+    subgraph Data_Layer [資料持久層]
+        DB[("PostgreSQL + pgvector 資料庫")]
     end
 
-    subgraph Persistence_Layer [資料持久化]
-        Repo["ITripRepository / TripRepo"]
-        Ctx["TravelDbContext<br/>(EF Core 10)"]
-        TRAG --> Repo
-        BOOK --> Ctx
-        AUTH_S --> Ctx
-        AUDIT --> Ctx
-        Repo --> Ctx
-        Ctx -- "Vector Search (+/-)" --> DB[("PostgreSQL<br/>+ pgvector")]
-    end
+    FE -- "HTTPS / JWT" --> API
+    Service -- "EF Core / RAG 搜尋" --> DB
+    Worker -- "批次向量化處理" --> DB
 ```
 
 ---
@@ -92,59 +66,33 @@ graph TD
 - **Enterprise Design Patterns**: Implements **Repository Pattern**, **Unit of Work** (via EF Core), and **Clean Architecture** principles.
 
 ### Architecture
-The project leverages GitHub's native Mermaid support for dynamic visualization. You can also view the [Source Draw.io File](./TravelTrip_Architecture_Detailed.drawio).
+The project follows a distributed architecture designed for performance. Below is the Mermaid visualization. You can also download the [Source Draw.io File (English)](./TravelTrip_Architecture_EN.drawio).
 
 ```mermaid
 graph TD
-    subgraph Client_Layer [Client - React / Vite]
-        UI["UI Components<br/>(Trips, Search, Cart)"]
-        State["State Management<br/>(Storage / Context)"]
-        Inceptors["HTTP Interceptors<br/>(JWT Injection)"]
-        UI --> State
-        State --> Inceptors
+    subgraph Client_Layer [Client Layer]
+        FE["React / Vite Frontend"]
     end
 
-    subgraph API_Processing [API Middleware & Pipeline]
-        CORS["CORS Policy"]
-        Auth["JWT Authentication<br/>(AuthorizeRole)"]
-        ExHandler["Global Exception Handler<br/>(Middleware)"]
-        Inceptors -- "HTTP Request" --> CORS
-        CORS --> Auth
-        Auth --> ExHandler
+    subgraph API_Layer [API Layer]
+        API["ASP.NET Core API"]
+        Service["TripRagService / AuthService"]
+        API --> Service
     end
 
-    subgraph Application_Services [Logic Service Layer]
-        TRAG["TripRagService<br/>(Search & Init)"]
-        CBOT["ChatbotService<br/>(AI Chat)"]
-        BOOK["BookingService<br/>(Order Flow)"]
-        CART["CartService<br/>(Redis/DB)"]
-        AUTH_S["AuthService<br/>(Identity)"]
-        AUDIT["AuditService<br/>(Admin Logs)"]
-        EMAIL["EmailService<br/>(SMTP)"]
-
-        ExHandler --> TRAG
-        TRAG --> CBOT
-        ExHandler --> BOOK
-        ExHandler --> AUTH_S
-        BOOK -.-> AUDIT
+    subgraph Worker_Layer [Worker Layer]
+        Worker["TravelTrip.Worker Service"]
+        AI["Local AI Embedder"]
+        Worker --> AI
     end
 
-    subgraph AI_Infrastructure [Local AI Core]
-        Embedding["Local Text Embedder<br/>(SmartComponents)"]
-        TRAG -- "Generate Query Vector" --> Embedding
-        Worker["TravelTrip.Worker"] -- "Batch Vectorization" --> Embedding
+    subgraph Data_Layer [Data Layer]
+        DB[("PostgreSQL + pgvector Database")]
     end
 
-    subgraph Persistence_Layer [Data Persistence]
-        Repo["ITripRepository / TripRepo"]
-        Ctx["TravelDbContext<br/>(EF Core 10)"]
-        TRAG --> Repo
-        BOOK --> Ctx
-        AUTH_S --> Ctx
-        AUDIT --> Ctx
-        Repo --> Ctx
-        Ctx -- "Vector Search (+/-)" --> DB[("PostgreSQL<br/>+ pgvector")]
-    end
+    FE -- "HTTPS / JWT" --> API
+    Service -- "EF Core / RAG Search" --> DB
+    Worker -- "Batch Vectorization" --> DB
 ```
 
 ---
