@@ -77,7 +77,6 @@ sequenceDiagram
 
 ---
 
-## English
 
 ### Introduction
 **TravelTrip** is a high-performance travel search and recommendation engine built on **.NET 10**. It features a native **RAG (Retrieval-Augmented Generation)** implementation using **pgvector** and **local embedding models**, providing deep semantic search without external API dependencies.
