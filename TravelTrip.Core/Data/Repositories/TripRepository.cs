@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Pgvector.EntityFrameworkCore;
 using TravelTrip.Core.Models;
 
 namespace TravelTrip.Core.Data.Repositories;
+
 
 public class TripRepository : ITripRepository
 {
